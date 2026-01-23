@@ -55,3 +55,6 @@ yarn-debug.log*
 
 # Byebug history
 .byebug_history
+
+/app/assets/builds/*
+!/app/assets/builds/.keep

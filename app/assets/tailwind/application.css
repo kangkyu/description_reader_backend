@@ -1,0 +1,22 @@
+@import "tailwindcss";
+
+@theme {
+  --color-amazon: #ff9900;
+  --color-amazon-dark: #e68a00;
+  --color-amazon-light: #fff8e8;
+  --color-amazon-bg: #fffbf0;
+  --color-amazon-border: #ffe0a0;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid #eee;
+  border-top-color: #ff9900;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
