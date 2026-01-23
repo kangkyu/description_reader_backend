@@ -7,7 +7,7 @@ Rails.application.routes.draw do
   end
 
   # Web UI
-  root "videos#index"
+  root "pages#home"
   resources :videos, only: [:index]
 
   get "up" => "rails/health#show", as: :rails_health_check
