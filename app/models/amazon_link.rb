@@ -1,9 +1,10 @@
 require "net/http"
 
 class AmazonLink < ApplicationRecord
-  belongs_to :summary
+  has_many :video_amazon_links, dependent: :destroy
+  has_many :videos, through: :video_amazon_links
 
-  validates :url, presence: true
+  validates :url, presence: true, uniqueness: true
 
   before_save :resolve_short_url
 

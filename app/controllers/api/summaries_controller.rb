@@ -2,41 +2,52 @@ require "net/http"
 
 class Api::SummariesController < Api::ApplicationController
   def index
-    @summaries = Current.session.user.summaries.includes(:amazon_links).order(created_at: :desc)
-    render json: @summaries.as_json(include: :amazon_links)
+    @summaries = Current.session.user.summaries
+      .includes(video: :amazon_links)
+      .order(created_at: :desc)
+    render json: @summaries.map { |s| summary_json(s) }
   end
 
   def create
-    @summary = Current.session.user.summaries.find_or_initialize_by(video_id: params[:video_id])
-    @summary.assign_attributes(summary_params.except(:amazon_links_attributes))
-    if @summary.persisted?
-      add_new_amazon_links
-    else
-      @summary.amazon_links.build(amazon_links_params)
+    @video = Video.find_or_initialize_by(youtube_id: params[:video_id])
+    @video.assign_attributes(video_params)
+
+    @summary = Current.session.user.summaries.find_or_initialize_by(video: @video)
+    @summary.assign_attributes(summary_params)
+
+    ActiveRecord::Base.transaction do
+      @video.save!
+      @summary.save!
+      add_amazon_links_to_video
     end
-    if @summary.save
-      render json: @summary.as_json(include: :amazon_links), status: :created
-    else
-      render json: { errors: @summary.errors.full_messages }, status: :unprocessable_entity
-    end
+
+    render json: summary_json(@summary), status: :created
+  rescue ActiveRecord::RecordInvalid => e
+    render json: { errors: e.record.errors.full_messages }, status: :unprocessable_entity
   end
 
   private
 
+  def video_params
+    { title: params[:video_title], url: params[:video_url] }
+  end
+
   def summary_params
-    params.permit(:video_id, :video_title, :summary_text, :video_url, amazon_links_attributes: [:url])
+    params.permit(:summary_text)
   end
 
   def amazon_links_params
     params.fetch(:amazon_links_attributes, []).map { |link| link.permit(:url) }
   end
 
-  def add_new_amazon_links
-    incoming_urls = amazon_links_params.map { |link| link[:url] }.compact
-    resolved_urls = incoming_urls.map { |url| resolve_amazon_url(url) }
-    existing_urls = @summary.amazon_links.pluck(:url)
-    new_urls = resolved_urls - existing_urls
-    new_urls.each { |url| @summary.amazon_links.build(url: url) }
+  def add_amazon_links_to_video
+    amazon_links_params.each do |link_params|
+      url = resolve_amazon_url(link_params[:url])
+      next if url.blank?
+
+      amazon_link = AmazonLink.find_or_create_by(url: url)
+      @video.amazon_links << amazon_link unless @video.amazon_links.include?(amazon_link)
+    end
   end
 
   def resolve_amazon_url(url)
@@ -49,5 +60,18 @@ class Api::SummariesController < Api::ApplicationController
     response["location"] || url
   rescue StandardError
     url
+  end
+
+  def summary_json(summary)
+    {
+      id: summary.id,
+      video_id: summary.video&.youtube_id,
+      video_title: summary.video&.title,
+      video_url: summary.video&.url,
+      summary_text: summary.summary_text,
+      created_at: summary.created_at,
+      updated_at: summary.updated_at,
+      amazon_links: summary.video&.amazon_links&.map { |link| { id: link.id, url: link.url } } || []
+    }
   end
 end

@@ -1,8 +1,9 @@
 class Summary < ApplicationRecord
   belongs_to :user
-  has_many :amazon_links, dependent: :destroy
+  belongs_to :video, optional: true
 
-  validates :video_id, presence: true, uniqueness: { scope: :user_id }
+  validates :video_id, uniqueness: { scope: :user_id }, allow_nil: true
 
-  accepts_nested_attributes_for :amazon_links
+  # Delegate amazon_links to video for convenience
+  delegate :amazon_links, to: :video, allow_nil: true
 end
