@@ -1,6 +1,6 @@
 require "net/http"
 
-class SummariesController < ApplicationController
+class Api::SummariesController < Api::ApplicationController
   def index
     @summaries = Current.session.user.summaries.includes(:amazon_links).order(created_at: :desc)
     render json: @summaries.as_json(include: :amazon_links)

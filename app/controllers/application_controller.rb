@@ -1,3 +1,2 @@
-class ApplicationController < ActionController::API
-  include Authentication
+class ApplicationController < ActionController::Base
 end

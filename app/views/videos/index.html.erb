@@ -1,0 +1,428 @@
+<% content_for :head do %>
+<style>
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+    background: #f5f5f5;
+    min-height: 100vh;
+  }
+
+  .header {
+    background: linear-gradient(135deg, #ff9900 0%, #ff6600 100%);
+    color: white;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  }
+
+  .header h1 { font-size: 24px; margin-bottom: 5px; }
+  .header p { opacity: 0.9; font-size: 14px; }
+
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+
+  .login-container {
+    max-width: 400px;
+    margin: 60px auto;
+    background: white;
+    border-radius: 12px;
+    padding: 30px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+  }
+
+  .login-container h2 { text-align: center; margin-bottom: 20px; color: #333; }
+
+  .form-group { margin-bottom: 15px; }
+  .form-group label { display: block; margin-bottom: 5px; color: #555; font-size: 14px; }
+  .form-group input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+  }
+  .form-group input:focus { outline: none; border-color: #ff9900; }
+
+  .btn {
+    width: 100%;
+    padding: 12px;
+    background: #ff9900;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .btn:hover { background: #e68a00; }
+  .btn:disabled { background: #ccc; cursor: not-allowed; }
+
+  .error-message {
+    background: #fee;
+    color: #c00;
+    padding: 10px;
+    border-radius: 6px;
+    margin-bottom: 15px;
+    font-size: 14px;
+    display: none;
+  }
+
+  .user-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: white;
+    padding: 15px 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  }
+  .user-bar span { color: #666; }
+  .user-bar button {
+    background: none;
+    border: 1px solid #ddd;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+  }
+  .user-bar button:hover { background: #f5f5f5; }
+
+  .videos-grid { display: grid; gap: 20px; }
+
+  .video-card {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .video-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+  }
+
+  .video-header {
+    display: flex;
+    gap: 15px;
+    padding: 15px;
+    border-bottom: 1px solid #eee;
+  }
+  .video-thumbnail {
+    flex-shrink: 0;
+    width: 160px;
+    height: 90px;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #f0f0f0;
+  }
+  .video-thumbnail img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .video-info { flex: 1; min-width: 0; }
+  .video-title { font-size: 16px; font-weight: 600; color: #333; margin-bottom: 8px; line-height: 1.3; }
+  .video-title a { color: inherit; text-decoration: none; }
+  .video-title a:hover { color: #ff9900; }
+  .video-meta { font-size: 12px; color: #888; }
+
+  .amazon-links { padding: 15px 20px; background: #fffbf0; }
+  .amazon-links-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #ff9900;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .amazon-link-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    background: white;
+    border: 1px solid #ffe0a0;
+    border-radius: 6px;
+    margin-bottom: 8px;
+    text-decoration: none;
+    color: #333;
+    transition: all 0.2s;
+  }
+  .amazon-link-item:hover { background: #fff8e8; border-color: #ff9900; }
+  .amazon-link-item:last-child { margin-bottom: 0; }
+
+  .link-number {
+    width: 24px;
+    height: 24px;
+    background: #ff9900;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 600;
+    flex-shrink: 0;
+  }
+
+  .link-url {
+    flex: 1;
+    font-size: 13px;
+    color: #555;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .external-icon { color: #999; flex-shrink: 0; }
+
+  .empty-state { text-align: center; padding: 60px 20px; color: #888; }
+  .empty-state h3 { font-size: 20px; margin-bottom: 10px; color: #666; }
+
+  .loading { text-align: center; padding: 40px; color: #888; }
+  .spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid #eee;
+    border-top-color: #ff9900;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 15px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .hidden { display: none !important; }
+</style>
+<% end %>
+
+<div class="header">
+  <h1>Amazon Affiliated Videos</h1>
+  <p>Your saved YouTube videos with Amazon product links</p>
+</div>
+
+<!-- Login Section -->
+<div id="login-section" class="login-container hidden">
+  <h2>Login</h2>
+  <div id="error-message" class="error-message"></div>
+  <form id="login-form">
+    <div class="form-group">
+      <label for="email">Email</label>
+      <input type="email" id="email" required placeholder="your@email.com">
+    </div>
+    <div class="form-group">
+      <label for="password">Password</label>
+      <input type="password" id="password" required placeholder="Your password">
+    </div>
+    <button type="submit" class="btn" id="login-btn">Login</button>
+  </form>
+</div>
+
+<!-- Videos Section -->
+<div id="videos-section" class="container hidden">
+  <div class="user-bar">
+    <span>Logged in as <strong id="user-email"></strong></span>
+    <button id="logout-btn">Logout</button>
+  </div>
+
+  <div id="loading" class="loading">
+    <div class="spinner"></div>
+    <p>Loading your videos...</p>
+  </div>
+
+  <div id="videos-grid" class="videos-grid"></div>
+
+  <div id="empty-state" class="empty-state hidden">
+    <h3>No videos yet</h3>
+    <p>Videos with Amazon links that you save from the extension will appear here.</p>
+  </div>
+</div>
+
+<script>
+  const API_BASE = window.location.origin;
+  let authToken = localStorage.getItem('authToken');
+  let userEmail = localStorage.getItem('userEmail');
+
+  const loginSection = document.getElementById('login-section');
+  const videosSection = document.getElementById('videos-section');
+  const loginForm = document.getElementById('login-form');
+  const errorMessage = document.getElementById('error-message');
+  const userEmailEl = document.getElementById('user-email');
+  const logoutBtn = document.getElementById('logout-btn');
+  const loadingEl = document.getElementById('loading');
+  const videosGrid = document.getElementById('videos-grid');
+  const emptyState = document.getElementById('empty-state');
+
+  if (authToken) {
+    showVideosSection();
+    loadVideos();
+  } else {
+    showLoginSection();
+  }
+
+  loginForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+    const loginBtn = document.getElementById('login-btn');
+
+    loginBtn.disabled = true;
+    loginBtn.textContent = 'Logging in...';
+    errorMessage.style.display = 'none';
+
+    try {
+      const response = await fetch(`${API_BASE}/session`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email_address: email, password })
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        authToken = data.token;
+        userEmail = data.email;
+        localStorage.setItem('authToken', authToken);
+        localStorage.setItem('userEmail', userEmail);
+        showVideosSection();
+        loadVideos();
+      } else {
+        errorMessage.textContent = data.error || 'Login failed';
+        errorMessage.style.display = 'block';
+      }
+    } catch (error) {
+      errorMessage.textContent = 'Network error. Please try again.';
+      errorMessage.style.display = 'block';
+    } finally {
+      loginBtn.disabled = false;
+      loginBtn.textContent = 'Login';
+    }
+  });
+
+  logoutBtn.addEventListener('click', () => {
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('userEmail');
+    authToken = null;
+    userEmail = null;
+    showLoginSection();
+  });
+
+  function showLoginSection() {
+    loginSection.classList.remove('hidden');
+    videosSection.classList.add('hidden');
+  }
+
+  function showVideosSection() {
+    loginSection.classList.add('hidden');
+    videosSection.classList.remove('hidden');
+    userEmailEl.textContent = userEmail || 'User';
+  }
+
+  async function loadVideos() {
+    loadingEl.classList.remove('hidden');
+    videosGrid.innerHTML = '';
+    emptyState.classList.add('hidden');
+
+    try {
+      const response = await fetch(`${API_BASE}/summaries`, {
+        headers: { 'Authorization': `Bearer ${authToken}` }
+      });
+
+      if (response.status === 401) {
+        localStorage.removeItem('authToken');
+        localStorage.removeItem('userEmail');
+        showLoginSection();
+        return;
+      }
+
+      const summaries = await response.json();
+      const videosWithLinks = summaries.filter(s => s.amazon_links && s.amazon_links.length > 0);
+
+      loadingEl.classList.add('hidden');
+
+      if (videosWithLinks.length === 0) {
+        emptyState.classList.remove('hidden');
+        return;
+      }
+
+      videosWithLinks.forEach(video => {
+        videosGrid.appendChild(createVideoCard(video));
+      });
+
+    } catch (error) {
+      loadingEl.classList.add('hidden');
+      videosGrid.innerHTML = '<p style="text-align:center;color:#c00;">Failed to load videos.</p>';
+    }
+  }
+
+  function createVideoCard(video) {
+    const card = document.createElement('div');
+    card.className = 'video-card';
+
+    const date = new Date(video.created_at).toLocaleDateString('en-US', {
+      year: 'numeric', month: 'short', day: 'numeric'
+    });
+
+    const linksHtml = video.amazon_links.map((link, index) => `
+      <a href="${link.url}" target="_blank" rel="noopener noreferrer" class="amazon-link-item">
+        <span class="link-number">${index + 1}</span>
+        <span class="link-url">${truncateUrl(link.url)}</span>
+        <svg class="external-icon" width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M14,3V5H17.59L7.76,14.83L9.17,16.24L19,6.41V10H21V3M19,19H5V5H12V3H5C3.89,3 3,3.9 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V12H19V19Z"/>
+        </svg>
+      </a>
+    `).join('');
+
+    const thumbnailUrl = `https://img.youtube.com/vi/${video.video_id}/mqdefault.jpg`;
+
+    card.innerHTML = `
+      <div class="video-header">
+        <a href="${video.video_url}" target="_blank" class="video-thumbnail">
+          <img src="${thumbnailUrl}" alt="Video thumbnail" loading="lazy">
+        </a>
+        <div class="video-info">
+          <div class="video-title">
+            <a href="${video.video_url}" target="_blank">${escapeHtml(video.video_title || 'Untitled Video')}</a>
+          </div>
+          <div class="video-meta">Saved on ${date} • ${video.amazon_links.length} Amazon link${video.amazon_links.length !== 1 ? 's' : ''}</div>
+        </div>
+      </div>
+      <div class="amazon-links">
+        <div class="amazon-links-title"><span>🛒</span> Amazon Links</div>
+        ${linksHtml}
+      </div>
+    `;
+
+    return card;
+  }
+
+  function truncateUrl(url) {
+    try {
+      const urlObj = new URL(url);
+      if (urlObj.hostname === 'amzn.to') return url.replace(/^https?:\/\//, '');
+      const dpMatch = urlObj.pathname.match(/\/dp\/([A-Z0-9]+)/i);
+      if (dpMatch) return `amazon.../${dpMatch[1]}`;
+      const gpMatch = urlObj.pathname.match(/\/gp\/product\/([A-Z0-9]+)/i);
+      if (gpMatch) return `amazon.../${gpMatch[1]}`;
+      const display = url.replace(/^https?:\/\/(www\.)?/, '');
+      return display.length > 50 ? display.substring(0, 47) + '...' : display;
+    } catch { return url.length > 50 ? url.substring(0, 47) + '...' : url; }
+  }
+
+  function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+  }
+</script>
