@@ -1,11 +1,11 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  youtube_id: MyString
-  title: MyString
-  url: MyString
+  youtube_id: abc123
+  title: Video One
+  url: https://www.youtube.com/watch?v=abc123
 
 two:
-  youtube_id: MyString
-  title: MyString
-  url: MyString
+  youtube_id: def456
+  title: Video Two
+  url: https://www.youtube.com/watch?v=def456

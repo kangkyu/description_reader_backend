@@ -1,33 +1,31 @@
 require "test_helper"
 
 class SessionsControllerTest < ActionDispatch::IntegrationTest
-  setup { @user = User.take }
-
-  test "new" do
-    get new_session_path
-    assert_response :success
-  end
+  setup { @user = users(:one) }
 
   test "create with valid credentials" do
-    post session_path, params: { email_address: @user.email_address, password: "password" }
+    post session_path, params: { email_address: @user.email_address, password: "password" }, as: :json
 
-    assert_redirected_to root_path
-    assert cookies[:session_id]
+    assert_response :success
+    json = JSON.parse(response.body)
+    assert json["token"].present?
+    assert_equal @user.email_address, json["email"]
   end
 
   test "create with invalid credentials" do
-    post session_path, params: { email_address: @user.email_address, password: "wrong" }
+    post session_path, params: { email_address: @user.email_address, password: "wrong" }, as: :json
 
-    assert_redirected_to new_session_path
-    assert_nil cookies[:session_id]
+    assert_response :unauthorized
+    json = JSON.parse(response.body)
+    assert_equal "Invalid email or password", json["error"]
   end
 
   test "destroy" do
-    sign_in_as(User.take)
+    session = @user.sessions.create!
+    delete session_path, headers: { "Authorization" => "Bearer #{session.token}" }, as: :json
 
-    delete session_path
-
-    assert_redirected_to new_session_path
-    assert_empty cookies[:session_id]
+    assert_response :success
+    json = JSON.parse(response.body)
+    assert_equal "Logged out", json["message"]
   end
 end
