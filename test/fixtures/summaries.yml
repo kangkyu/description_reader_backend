@@ -2,14 +2,10 @@
 
 one:
   user: one
-  video_id: MyString
-  video_title: MyString
+  video: one
   summary_text: MyText
-  video_url: MyString
 
 two:
   user: two
-  video_id: MyString
-  video_title: MyString
+  video: two
   summary_text: MyText
-  video_url: MyString
