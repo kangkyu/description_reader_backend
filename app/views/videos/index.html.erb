@@ -103,15 +103,21 @@
 
     const videosHtml = link.videos.map(video => {
       const thumbnailUrl = `https://img.youtube.com/vi/${video.youtube_id}/default.jpg`;
+      const summaryHtml = video.summary_text
+        ? `<p class="text-xs text-gray-500 mt-1 line-clamp-2">${escapeHtml(video.summary_text)}</p>`
+        : '';
       return `
-        <a href="${video.url}" target="_blank" rel="noopener noreferrer"
-           class="flex items-center gap-3 p-2 bg-white border border-gray-200 rounded-md mb-2 no-underline text-gray-800 transition-all hover:bg-gray-50 hover:border-gray-300 last:mb-0">
-          <img src="${thumbnailUrl}" alt="Video thumbnail" class="w-16 h-12 object-cover rounded shrink-0">
-          <span class="flex-1 text-sm text-gray-700 overflow-hidden text-ellipsis whitespace-nowrap">${escapeHtml(video.title || 'Untitled Video')}</span>
-          <svg class="text-gray-400 shrink-0" width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M14,3V5H17.59L7.76,14.83L9.17,16.24L19,6.41V10H21V3M19,19H5V5H12V3H5C3.89,3 3,3.9 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V12H19V19Z"/>
-          </svg>
-        </a>
+        <div class="p-2 bg-white border border-gray-200 rounded-md mb-2 transition-all hover:bg-gray-50 hover:border-gray-300 last:mb-0">
+          <a href="${video.url}" target="_blank" rel="noopener noreferrer"
+             class="flex items-center gap-3 no-underline text-gray-800">
+            <img src="${thumbnailUrl}" alt="Video thumbnail" class="w-16 h-12 object-cover rounded shrink-0">
+            <span class="flex-1 text-sm text-gray-700 overflow-hidden text-ellipsis whitespace-nowrap">${escapeHtml(video.title || 'Untitled Video')}</span>
+            <svg class="text-gray-400 shrink-0" width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M14,3V5H17.59L7.76,14.83L9.17,16.24L19,6.41V10H21V3M19,19H5V5H12V3H5C3.89,3 3,3.9 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V12H19V19Z"/>
+            </svg>
+          </a>
+          ${summaryHtml}
+        </div>
       `;
     }).join('');
 

@@ -1,7 +1,8 @@
 class Api::AmazonLinksController < Api::ApplicationController
   def index
-    # Get all amazon_links that belong to videos the user has summaries for
-    user_video_ids = Current.session.user.summaries.pluck(:video_id)
+    # Eager load user's summaries indexed by video_id
+    @summaries_by_video_id = Current.session.user.summaries.index_by(&:video_id)
+    user_video_ids = @summaries_by_video_id.keys
 
     @amazon_links = AmazonLink
       .joins(:videos)
@@ -21,11 +22,13 @@ class Api::AmazonLinksController < Api::ApplicationController
       url: amazon_link.url,
       created_at: amazon_link.created_at,
       videos: amazon_link.videos.where(id: user_video_ids).map do |video|
+        summary = @summaries_by_video_id[video.id]
         {
           id: video.id,
           youtube_id: video.youtube_id,
           title: video.title,
-          url: video.url
+          url: video.url,
+          summary_text: summary&.summary_text
         }
       end
     }
