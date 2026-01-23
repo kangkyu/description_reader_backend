@@ -46,6 +46,11 @@ class Api::SummariesController < Api::ApplicationController
       next if url.blank?
 
       amazon_link = AmazonLink.find_or_create_by(url: url)
+
+      # Remove from all other videos (keep only on the latest video)
+      amazon_link.video_amazon_links.where.not(video: @video).destroy_all
+
+      # Add to current video if not already there
       @video.amazon_links << amazon_link unless @video.amazon_links.include?(amazon_link)
     end
   end
