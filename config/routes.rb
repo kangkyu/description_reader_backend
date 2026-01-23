@@ -4,6 +4,7 @@ Rails.application.routes.draw do
     resource :session, only: [ :create, :destroy ]
     resource :registration, only: [ :create ]
     resources :summaries, only: [ :index, :create ]
+    resources :amazon_links, only: [ :index ]
   end
 
   # Web UI
