@@ -5,11 +5,11 @@ default: &default
 
 development:
   <<: *default
-  database: description_reader_backend_development
+  database: description_reader_development
 
 test:
   <<: *default
-  database: description_reader_backend_test
+  database: description_reader_test
 
 production:
   <<: *default
