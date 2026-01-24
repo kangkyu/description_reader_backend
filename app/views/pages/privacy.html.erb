@@ -1,0 +1,70 @@
+<div class="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100">
+  <!-- Header -->
+  <header class="bg-white shadow-sm">
+    <div class="max-w-4xl mx-auto px-6 py-4 flex justify-between items-center">
+      <a href="/" class="text-xl font-bold text-amazon">Description Reader</a>
+      <a href="/videos" class="text-sm text-gray-600 hover:text-amazon">My Videos</a>
+    </div>
+  </header>
+
+  <!-- Privacy Policy Content -->
+  <main class="max-w-4xl mx-auto px-6 py-12">
+    <div class="bg-white rounded-xl p-8 shadow-md">
+      <h1 class="text-3xl font-bold text-gray-900 mb-2">Privacy Policy</h1>
+      <p class="text-gray-500 mb-8">Last updated: January 2025</p>
+
+      <div class="space-y-8 text-gray-700">
+        <section>
+          <h2 class="text-xl font-semibold text-gray-900 mb-3">Data We Collect</h2>
+          <p class="mb-4">This extension collects and processes the following data:</p>
+          <ul class="list-disc list-inside space-y-2 ml-4">
+            <li><strong>YouTube video information:</strong> Video ID, title, and description text from YouTube pages you visit. This data is used to extract Amazon links and generate summaries.</li>
+            <li><strong>Amazon links:</strong> Product links found in video descriptions are displayed to you and optionally saved to your account.</li>
+            <li><strong>Account information:</strong> If you create an account, your email and password are sent to our server for authentication.</li>
+            <li><strong>API keys:</strong> Your Gemini API key is stored locally in your browser and sent directly to Google's servers to generate summaries.</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2 class="text-xl font-semibold text-gray-900 mb-3">How We Use Your Data</h2>
+          <ul class="list-disc list-inside space-y-2 ml-4">
+            <li>Extract and display Amazon links from YouTube descriptions</li>
+            <li>Generate AI summaries of video content (via Google Gemini API)</li>
+            <li>Save videos and links to your account (if logged in)</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2 class="text-xl font-semibold text-gray-900 mb-3">Data Storage</h2>
+          <ul class="list-disc list-inside space-y-2 ml-4">
+            <li><strong>Local storage:</strong> API keys and preferences are stored in your browser using Chrome's sync storage. This data never passes through our servers.</li>
+            <li><strong>Server storage:</strong> If you create an account, your saved videos, Amazon links, and generated summaries are stored on our server.</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2 class="text-xl font-semibold text-gray-900 mb-3">Third-Party Services</h2>
+          <p>
+            <strong>Google Gemini API:</strong> Video descriptions are sent to Google for AI summarization.
+            See <a href="https://policies.google.com/privacy" class="text-amazon hover:underline" target="_blank" rel="noopener">Google's Privacy Policy</a>.
+          </p>
+        </section>
+
+        <section>
+          <h2 class="text-xl font-semibold text-gray-900 mb-3">Data Sharing</h2>
+          <p>We do not sell, trade, or share your personal data with third parties.</p>
+        </section>
+
+        <section>
+          <h2 class="text-xl font-semibold text-gray-900 mb-3">Contact</h2>
+          <p>For questions about this privacy policy, please open an issue on our GitHub repository.</p>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="max-w-4xl mx-auto px-6 py-8 text-center text-gray-500 text-sm">
+    <p>Description Reader - Save Amazon product links from YouTube videos</p>
+  </footer>
+</div>

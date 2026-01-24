@@ -9,6 +9,7 @@ Rails.application.routes.draw do
 
   # Web UI
   root "pages#home"
+  get "privacy" => "pages#privacy"
   resources :videos, only: [:index]
 
   get "up" => "rails/health#show", as: :rails_health_check
