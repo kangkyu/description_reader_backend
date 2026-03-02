@@ -46,8 +46,7 @@ Rails.application.configure do
   # Use default memory store for caching
   config.cache_store = :memory_store
 
-  # Use default async queue adapter for Active Job
-  config.active_job.queue_adapter = :async
+  config.active_job.queue_adapter = :sidekiq
 
   # Ignore bad email addresses and do not raise email delivery errors.
   # Set this to true and configure the email server for immediate delivery to raise delivery errors.

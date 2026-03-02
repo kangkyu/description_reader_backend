@@ -5,6 +5,7 @@ Rails.application.routes.draw do
     resource :registration, only: [ :create ]
     resources :summaries, only: [ :index, :create ]
     resources :amazon_links, only: [ :index ]
+    resources :channels, only: [ :index ]
   end
 
   # Web UI

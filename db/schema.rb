@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_01_23_092552) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_02_092001) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -19,6 +19,13 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_23_092552) do
     t.datetime "updated_at", null: false
     t.string "url"
     t.index ["url"], name: "index_amazon_links_on_url", unique: true
+  end
+
+  create_table "channels", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "uuid"
+    t.index ["uuid"], name: "index_channels_on_uuid", unique: true
   end
 
   create_table "sessions", force: :cascade do |t|
@@ -62,11 +69,13 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_23_092552) do
   end
 
   create_table "videos", force: :cascade do |t|
+    t.bigint "channel_id"
     t.datetime "created_at", null: false
     t.string "title"
     t.datetime "updated_at", null: false
     t.string "url"
     t.string "youtube_id"
+    t.index ["channel_id"], name: "index_videos_on_channel_id"
     t.index ["youtube_id"], name: "index_videos_on_youtube_id", unique: true
   end
 
@@ -75,4 +84,5 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_23_092552) do
   add_foreign_key "summaries", "videos"
   add_foreign_key "video_amazon_links", "amazon_links"
   add_foreign_key "video_amazon_links", "videos"
+  add_foreign_key "videos", "channels"
 end
