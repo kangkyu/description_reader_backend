@@ -7,8 +7,13 @@ class AmazonLink < ApplicationRecord
   validates :url, presence: true, uniqueness: true
 
   before_save :resolve_short_url
+  after_create :push_to_merch_app
 
   private
+
+  def push_to_merch_app
+    PushItemJob.perform_later(id)
+  end
 
   def resolve_short_url
     return unless url&.include?("amzn.to")
