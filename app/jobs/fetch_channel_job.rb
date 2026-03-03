@@ -9,7 +9,10 @@ class FetchChannelJob < ApplicationJob
     channel_uuid = yt_video.channel_id
     return if channel_uuid.blank?
 
-    channel = Channel.find_or_create_by!(uuid: channel_uuid)
+    channel = Channel.find_or_initialize_by(uuid: channel_uuid)
+    new_record = channel.new_record?
+    channel.save!
+    PushChannelJob.perform_later(channel.id) if new_record
     video.update!(channel: channel)
   rescue Yt::Errors::NoItems, Yt::Errors::RequestError => e
     Rails.logger.warn("FetchChannelJob failed for video #{video_id}: #{e.message}")
