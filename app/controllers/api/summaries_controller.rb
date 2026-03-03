@@ -45,10 +45,13 @@ class Api::SummariesController < Api::ApplicationController
       url = resolve_amazon_url(link_params[:url])
       next if url.blank?
 
-      amazon_link = AmazonLink.find_or_create_by(url: url)
+      amazon_link = AmazonLink.find_or_initialize_by(url: url)
+      @new_record = amazon_link.new_record?
+      amazon_link.save!
 
-      # Add to current video if not already there
       @video.amazon_links << amazon_link unless @video.amazon_links.include?(amazon_link)
+
+      PushItemJob.perform_later(amazon_link.id) if @new_record
     end
   end
 
