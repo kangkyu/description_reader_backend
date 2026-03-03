@@ -7,7 +7,7 @@ class AmazonLink < ApplicationRecord
   validates :url, presence: true, uniqueness: true
 
   before_save :resolve_short_url
-  after_create :push_to_merch_app
+  after_create_commit :push_to_merch_app
 
   private
 

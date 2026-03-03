@@ -3,7 +3,7 @@ class Channel < ApplicationRecord
 
   validates :uuid, presence: true, uniqueness: true
 
-  after_create :push_to_merch_app
+  after_create_commit :push_to_merch_app
 
   private
 
