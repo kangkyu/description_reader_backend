@@ -15,11 +15,16 @@ class Api::SummariesController < Api::ApplicationController
     @summary = Current.session.user.summaries.find_or_initialize_by(video: @video)
     @summary.assign_attributes(summary_params)
 
+    @new_amazon_link_ids = []
+
     ActiveRecord::Base.transaction do
       @video.save!
       @summary.save!
       add_amazon_links_to_video
     end
+
+    # Enqueue after transaction commits so records exist in DB
+    @new_amazon_link_ids.each { |id| PushItemJob.perform_later(id) }
 
     render json: summary_json(@summary), status: :created
   rescue ActiveRecord::RecordInvalid => e
@@ -46,9 +51,11 @@ class Api::SummariesController < Api::ApplicationController
       next if url.blank?
 
       amazon_link = AmazonLink.find_or_initialize_by(url: url)
+      new_record = amazon_link.new_record?
       amazon_link.save!
 
       @video.amazon_links << amazon_link unless @video.amazon_links.include?(amazon_link)
+      @new_amazon_link_ids << amazon_link.id if new_record
     end
   end
 
