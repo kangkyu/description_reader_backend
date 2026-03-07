@@ -20,7 +20,7 @@ class FetchChannelJob < ApplicationJob
     channel = Channel.find_or_initialize_by(uuid: channel_uuid)
     new_channel = channel.new_record?
     channel.title ||= yt_channel.title
-    channel.handle ||= yt_channel.username
+    channel.handle ||= yt_channel.custom_url
     channel.save!
     video.update!(channel: channel)
 
