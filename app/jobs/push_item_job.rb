@@ -12,7 +12,7 @@ class PushItemJob < ApplicationJob
     api_token = ENV["MERCH_API_TOKEN"]
     return if api_url.blank? || api_token.blank?
 
-    uri = URI.join(api_url, "/api/v1/items")
+    uri = URI.join(api_url, "/api/v1/youtube_webhook")
     request = Net::HTTP::Post.new(uri)
     request["Authorization"] = "Bearer #{api_token}"
     request["Content-Type"] = "application/json"

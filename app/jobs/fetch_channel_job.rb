@@ -15,8 +15,12 @@ class FetchChannelJob < ApplicationJob
     channel_uuid = yt_video.channel_id
     return if channel_uuid.blank?
 
+    yt_channel = Yt::Channel.new(id: channel_uuid)
+
     channel = Channel.find_or_initialize_by(uuid: channel_uuid)
     new_channel = channel.new_record?
+    channel.title ||= yt_channel.title
+    channel.handle ||= yt_channel.username
     channel.save!
     video.update!(channel: channel)
 
