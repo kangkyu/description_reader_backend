@@ -21,6 +21,10 @@ class PushChannelJob < ApplicationJob
     Net::HTTP.start(uri.host, uri.port, use_ssl: uri.scheme == "https", open_timeout: 5, read_timeout: 5) do |http|
       http.request(request)
     end
+
+    channel.amazon_links.distinct.each do |amazon_link|
+      PushItemJob.perform_later(amazon_link.id, channel.uuid)
+    end
   rescue StandardError => e
     Rails.logger.warn("PushChannelJob failed for channel #{channel_id}: #{e.message}")
   end

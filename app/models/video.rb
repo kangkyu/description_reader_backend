@@ -6,17 +6,4 @@ class Video < ApplicationRecord
   has_many :summaries, dependent: :nullify
 
   validates :youtube_id, presence: true, uniqueness: true
-
-  after_save :track_needs_channel_lookup
-  after_commit :enqueue_channel_lookup
-
-  private
-
-  def track_needs_channel_lookup
-    @needs_channel_lookup = channel_id.nil? && youtube_id.present?
-  end
-
-  def enqueue_channel_lookup
-    FetchChannelJob.perform_later(id) if @needs_channel_lookup
-  end
 end

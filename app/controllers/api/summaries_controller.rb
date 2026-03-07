@@ -15,16 +15,13 @@ class Api::SummariesController < Api::ApplicationController
     @summary = Current.session.user.summaries.find_or_initialize_by(video: @video)
     @summary.assign_attributes(summary_params)
 
-    @new_amazon_link_ids = []
-
     ActiveRecord::Base.transaction do
       @video.save!
       @summary.save!
-      add_amazon_links_to_video
     end
 
-    # Enqueue after transaction commits so records exist in DB
-    @new_amazon_link_ids.each { |id| PushItemJob.perform_later(id) }
+    amazon_link_urls = amazon_links_params.map { |link| link[:url] }
+    FetchChannelJob.perform_later(@video.id, amazon_link_urls)
 
     render json: summary_json(@summary), status: :created
   rescue ActiveRecord::RecordInvalid => e
@@ -43,32 +40,6 @@ class Api::SummariesController < Api::ApplicationController
 
   def amazon_links_params
     params.fetch(:amazon_links_attributes, []).map { |link| link.permit(:url) }
-  end
-
-  def add_amazon_links_to_video
-    amazon_links_params.each do |link_params|
-      url = resolve_amazon_url(link_params[:url])
-      next if url.blank?
-
-      amazon_link = AmazonLink.find_or_initialize_by(url: url)
-      new_record = amazon_link.new_record?
-      amazon_link.save!
-
-      @video.amazon_links << amazon_link unless @video.amazon_links.include?(amazon_link)
-      @new_amazon_link_ids << amazon_link.id if new_record
-    end
-  end
-
-  def resolve_amazon_url(url)
-    return url unless url&.include?("amzn.to")
-
-    uri = URI.parse(url)
-    response = Net::HTTP.start(uri.host, uri.port, use_ssl: true, open_timeout: 5, read_timeout: 5) do |http|
-      http.head(uri.path)
-    end
-    response["location"] || url
-  rescue StandardError
-    url
   end
 
   def summary_json(summary)
