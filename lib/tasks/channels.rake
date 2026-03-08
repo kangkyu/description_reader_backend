@@ -25,7 +25,7 @@ namespace :channels do
       print "#{channel.uuid}... "
       yt_channel = Yt::Channel.new(id: channel.uuid)
       channel.title ||= yt_channel.title
-      channel.handle ||= yt_channel.username
+      channel.handle ||= yt_channel.custom_url
       channel.save!
       puts "#{channel.title} (@#{channel.handle})"
     rescue Yt::Errors::NoItems, Yt::Errors::RequestError => e
