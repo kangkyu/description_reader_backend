@@ -24,15 +24,15 @@ class FetchChannelJob < ApplicationJob
     channel.save!
     video.update!(channel: channel)
 
-    if new_channel
-      PushChannelJob.perform_later(channel.id)
-    else
-      # existing_amazon_link_ids = channel.amazon_links.where.not(video_amazon_links: { video_id: video.id }).pluck(:id).to_set
-      # video.amazon_links.each do |amazon_link|
-      #   next if existing_amazon_link_ids.include?(amazon_link.id)
-      #   PushItemJob.perform_later(amazon_link.id, channel.uuid)
-      # end
-    end
+    # if new_channel
+    #   PushChannelJob.perform_later(channel.id)
+    # else
+    #   existing_amazon_link_ids = channel.amazon_links.where.not(video_amazon_links: { video_id: video.id }).pluck(:id).to_set
+    #   video.amazon_links.each do |amazon_link|
+    #     next if existing_amazon_link_ids.include?(amazon_link.id)
+    #     PushItemJob.perform_later(amazon_link.id, channel.uuid)
+    #   end
+    # end
   rescue Yt::Errors::NoItems, Yt::Errors::RequestError => e
     Rails.logger.warn("FetchChannelJob failed for video #{video_id}: #{e.message}")
   end

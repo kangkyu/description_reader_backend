@@ -27,9 +27,9 @@ class PushChannelJob < ApplicationJob
       http.request(request)
     end
 
-    # channel.amazon_links.distinct.each do |amazon_link|
-    #   PushItemJob.perform_later(amazon_link.id, channel.uuid)
-    # end
+    channel.amazon_links.distinct.each do |amazon_link|
+      PushItemJob.perform_later(amazon_link.id, channel.uuid)
+    end
   rescue StandardError => e
     Rails.logger.warn("PushChannelJob failed for channel #{channel_id}: #{e.message}")
   end
